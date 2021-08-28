@@ -27,10 +27,10 @@ class Ui_MainWindow(object):
     
     def setupUi(self, main):
         main.setObjectName("main")
-        main.resize(800, 1000)
+        
 
         self.label = QtWidgets.QLabel(main)
-        self.label.setGeometry(QtCore.QRect(240, -10, 181, 81))
+        self.label.setGeometry(QtCore.QRect(210, 10, 220, 61))
         self.label.setAutoFillBackground(False)
         self.label.setStyleSheet("font: 81  35pt \"Open Sans\";\n"
 "color: rgb(238, 0, 157);")
@@ -106,7 +106,7 @@ class Ui_MainWindow(object):
         self.city.setObjectName("city")
         self.city.addItem("")
         self.listView = QtWidgets.QListWidget(main)
-        self.listView.setGeometry(QtCore.QRect(50, 460, 700 , 500))
+        self.listView.setGeometry(QtCore.QRect(50, 460, 700 , 400))
         self.listView.setObjectName("listView")
         #self.verticalScrollBar = QtWidgets.QScrollBar(main)
         #self.verticalScrollBar.setGeometry(QtCore.QRect(620, 460, 20, 291))
@@ -304,5 +304,6 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.setWindowTitle("Pycowin")
     MainWindow.setWindowIcon(QtGui.QIcon("injection.ico"))
+    MainWindow.setFixedSize(800,900)
     MainWindow.show()
     sys.exit(app.exec_())
