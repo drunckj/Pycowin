@@ -1,6 +1,6 @@
 # Pycowin
 Cowin app which sends notifications when vaccines are available
-## Get vaccines alert whenever vaccines are available in your area
+## Get alert whenever vaccines are available in your area
 This app searches for vaccines every 10 minutes and sends u a desktop as well as a voice notification to alert you 
 ## Screenshots
 ### Windows
