@@ -10,7 +10,6 @@
 
 
 from threading import Event,Thread
-from typing import AsyncGenerator, final
 from PyQt5 import QtCore, QtGui, QtWidgets
 import json
 import requests
@@ -19,11 +18,12 @@ import time
 import os
 import threading
 from playsound import playsound
-from requests.models import Response, parse_header_links
 from win10toast import ToastNotifier
 
 
 class Ui_MainWindow(object):
+    global flag
+    
     
     def setupUi(self, main):
         main.setObjectName("main")
@@ -150,17 +150,9 @@ class Ui_MainWindow(object):
         self.label_8.setText(_translate("main", "Get alerts when vaccines are available"))
         self.state.activated[str].connect(self.populatecity)
         self.city.activated[str].connect(self.idsaver)
-        self.search.clicked.connect(self.call_repeatedly)
+        self.search.clicked.connect(self.searchclick)
+        
 
-    def call_repeatedly(self):
-        self.searchclick()
-        stopped = Event()
-        def loop():
-            while not stopped.wait(600  ):
-                # the first call is in `interval` secs
-                self.searchclick()
-        Thread(target=loop).start()    
-        return stopped.set
 
     def populate(self):
         response = requests.get("https://cdn-api.co-vin.in/api/v2/admin/location/states")
@@ -242,10 +234,24 @@ class Ui_MainWindow(object):
         self.listView.addItem("Cost: "+str(Cost))
         self.listView.addItem("Vaccine: "+str(vacc))
         self.listView.addItem("########################################################")
-        self.searchvacc()
+        t2=threading.Thread(target=self.thread2)
+        t2.daemon = True
+        t2.start()
+
+    def thread2(self):
+        while True:
+            a=self.searchvacc()
+            if a==True:
+                return None
+                break
+            elif a==False:
+                time.sleep(10)
+
+
+            
     def searchvacc(self):
         self.listView.addItem("Searching for Vaccines :")
-        global final
+        
         vacc_api="https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id="+str(district_id)+"&date="+str(time.strftime("%d-%m-20%y"))
         vacc_resp=requests.get(vacc_api)
         vacc_data=vacc_resp.json()   
@@ -253,6 +259,7 @@ class Ui_MainWindow(object):
             Dosecheck='available_capacity_dose1'
         elif Dose==2:
             Dosecheck='available_capacity_dose2'
+        flag=0
         for i in range(0,len(vacc_data['sessions'])):
             if vacc_data['sessions'][i][Dosecheck]>0:
                 if vacc_data['sessions'][i]['min_age_limit']==Age:
@@ -263,16 +270,24 @@ class Ui_MainWindow(object):
                             final=final.replace(',','\n')
                             self.listView.addItem(final)
                             self.listView.addItem("########################################################")
-                            self.success()
+                            flag=1
+        if  flag==1:
+            t1=threading.Thread(target=self.success)
+            t1.start()
+            t1.join()
+            return True
+        elif flag==0:
+            return False
+                
+
                             
 
                             
     def success(self):
         toaster = ToastNotifier()
         toaster.show_toast("Vaccines found",duration=10,icon_path="injection.ico")
-        self.playsuccess()
-    # short delay between notiications
-    def playsuccess(self):
+
+    # short delay between notiication
         playsound('success.mp3')
         time.sleep(1.5)
  
@@ -287,5 +302,7 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    MainWindow.setWindowTitle("Pycowin")
+    MainWindow.setWindowIcon(QtGui.QIcon("injection.ico"))
     MainWindow.show()
     sys.exit(app.exec_())
