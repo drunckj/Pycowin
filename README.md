@@ -38,6 +38,6 @@ pip3 install requests PyQt5
 ## Running 
 ```
 git clone https://github.com/drunckj/Pycowin.git
-cd Pycowin/
+cd Pycowin/src/<windows or linux>
 python3 pycowin.py
 ```
