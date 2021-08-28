@@ -41,3 +41,5 @@ git clone https://github.com/drunckj/Pycowin.git
 cd Pycowin/src/<windows or linux>
 python3 pycowin.py
 ```
+
+## Want to buy me a coffee : [Paypal](https://www.paypal.com/paypalme/drunkcj) || [Crypto(preferred)](https://drunckj.github.io/drunkcj-crypto-donation/)
