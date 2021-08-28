@@ -245,7 +245,7 @@ class Ui_MainWindow(object):
                 return None
                 break
             elif a==False:
-                time.sleep(10)
+                time.sleep(600)
 
 
             
